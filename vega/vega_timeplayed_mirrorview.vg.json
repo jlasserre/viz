@@ -315,19 +315,21 @@
                 "scale": "x_TU",
                 "field": "targetMTBC_hour"
               },
-              "width": {
+              "x2": {
+                "scale": "x_TU",
                 "value": 1
               },
               "y": {
                 "scale": "yDates",
-                "field": "shortDate"
+                "field": "shortDate",
+                "offset": -2
               },
               "height": {
                 "scale": "yDates",
-                "band": 0.5
+                "band": 0.8
               },
               "opacity": {
-                "value": 1.0
+                "value": 0.5
               },
               "fill": {
                 "value": "red"
@@ -435,19 +437,23 @@
                 "scale": "x_MAIN",
                 "field": "targetMTBC_hour"
               },
-              "width": {
+              "x2": {
+                "scale": "x_MAIN",
                 "value": 1
               },
               "y": {
                 "scale": "yDates",
-                "field": "shortDate"
+                "field": "shortDate",
+                "offset":{
+                  "value": -2
+                }
               },
               "height": {
                 "scale": "yDates",
-                "band": 0.5
+                "band": 0.8
               },
               "opacity": {
-                "value": 1.0
+                "value": 0.6
               },
               "fill": {
                 "value": "red"
