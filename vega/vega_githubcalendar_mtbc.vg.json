@@ -1,0 +1,172 @@
+{
+    "$schema": "https://vega.github.io/schema/vega/v3.json",
+    "width": 1200,
+    "height": 160,
+    "padding": 5,
+    "data": [
+      {
+        "name": "coverage",
+        "format": {
+          "type": "csv"
+        },
+        "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vS-DVWYt4dVc5cMVuPs-Kb3a2jT9Yjfu1Ri_pRNwRqmRMF2V2OI7oUZwDra9TauQ8QykFsWLRaxcoQv/pub?output=csv",
+        "transform": [
+          {
+            "type": "formula",
+            "as":"valid",
+            "expr": "datum.timePlayed < datum.targetMTBC" 
+          }
+        ]
+      }
+    ],
+    "scales": [
+      {
+        "name": "yscale",
+        "type": "linear",
+        "range": "height",
+        "domain": {
+          "data": "coverage",
+          "field": "dayOfWeek"
+        }
+      },
+      {
+        "name": "xscale",
+        "type": "linear",
+        "range": "width",
+        "domain": {
+          "data": "coverage",
+          "field": "weekFromToday"
+        },
+        "offset":130
+      },
+      {
+        "name": "dotWidth",
+        "type": "linear",
+        "range": [
+          5,
+          18
+        ],
+        "domain": {
+          "data": "coverage",
+          "field": "occurrences"
+        }
+      },
+      {
+        "name": "dayColors",
+        "type": "ordinal",
+        "domain": {
+          "data": "coverage",
+          "field": "dayOfWeek"
+        },
+        "range": {
+          "scheme": "category20"
+        }
+      }
+    ],
+    "axes": [
+      {
+        "orient": "bottom",
+        "scale": "xscale",
+        "offset": 30
+      }
+    ],
+    "marks": [
+      {
+        "type": "rect",
+        "from": {
+          "data":"coverage"
+        },
+        "encode": {
+          "enter":{
+            "x": {
+              "scale": "xscale",
+              "field": "weekFromToday",
+              "offset": -8
+            },
+            "y": {
+              "scale": "yscale",
+              "field": "dayOfWeek"
+            },
+            "stroke":[{
+                "test": "!datum.valid",
+                "value":"red"
+              },
+              {
+                "value":"green"
+              }
+            ],
+            "strokeWidth":{"value": 3},
+            "width": {
+              "value": 20
+            },
+            "height": {
+              "value": 20
+            }
+          }
+        }
+      },
+      {
+        "type": "rect",
+        "from": {
+          "data": "coverage"
+        },
+        "encode": {
+          "enter": {
+            "x": {
+              "scale": "xscale",
+              "field": "weekFromToday",
+              "offset": -8
+            },
+            "y": {
+              "scale": "yscale",
+              "field": "dayOfWeek"
+            },
+            "width": {
+              "value": 20
+            },
+            "height": {
+              "value": 20
+            },
+            "fill": {
+              "scale": "dayColors",
+              "field": "dayOfWeek"
+            },
+            "fillOpacity": {
+              "value": 0.3
+            }
+          }
+        }
+      },
+      {
+        "type": "rect",
+        "from": {
+          "data": "coverage"
+        },
+        "encode": {
+          "enter": {
+            "x": {
+              "scale": "xscale",
+              "field": "weekFromToday",
+              "offset": -8
+            },
+            "y": {
+              "scale": "yscale",
+              "field": "dayOfWeek"
+            },
+            "width": {
+              "scale": "dotWidth",
+              "field": "occurrences"
+            },
+            "height": {
+              "scale": "dotWidth",
+              "field": "occurrences"
+            },
+            "fill": {
+              "scale": "dayColors",
+              "field": "dayOfWeek"
+            }
+          }
+        }
+      }
+    ]
+  }

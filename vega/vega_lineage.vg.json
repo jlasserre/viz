@@ -1,0 +1,182 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v3.0.json",
+  "width": 1000,
+  "height": 600,
+  "padding": 5,
+
+  "data": [
+    {
+      "name": "tree",
+      "values": [
+        {
+          "id":"Y1S1_0000",
+          "name":"Y1S1_0000",
+          "branchLevel":0
+        },
+        {
+          "id":"Y1S1_0001",
+          "name":"Y1S1_0001",
+          "parent":"Y1S1_0000",
+          "branchLevel":0
+        },
+        {
+          "id":"Y1S1_0002",
+          "name":"Y1S1_0002",
+          "parent":"Y1S1_0001",
+          "branchLevel":0
+        },
+        {
+          "id":"Y1S2_0012",
+          "name":"Y1S2_0012",
+          "parent":"Y1S1_0002",
+          "branchLevel":0
+        },
+        {
+          "id":"Y1S2_0013",
+          "name":"Y1S2_0013",
+          "parent":"Y1S2_0012",
+          "branchLevel":0
+        },
+        {
+          "id":"Y1S2_0014",
+          "name":"Y1S2_0014",
+          "parent":"Y1S2_0013",
+          "branchLevel":0
+        },
+        {
+          "id":"Y1S2_0015",
+          "name":"Y1S2_0015",
+          "parent":"Y1S2_0014",
+          "branchLevel":0
+        },
+        {
+          "id":"Y1S2_0016",
+          "name":"Y1S2_0016",
+          "parent":"Y1S2_0015",
+          "branchLevel":0
+        },
+        {
+          "id":"Y1S2_0017",
+          "name":"Y1S2_0017",
+          "parent":"Y1S2_0016",
+          "branchLevel":0
+        },
+        {
+          "id":"Y1S2_0018",
+          "name":"Y1S2_0018",
+          "parent":"Y1S2_0017",
+          "branchLevel":0
+        },
+        {
+          "id":"Y1S1.1_0003",
+          "name":"Y1S1.1_0003",
+          "parent":"Y1S1_0002",
+          "branchLevel":1
+        },
+        {
+          "id":"Y1S1.1_0006",
+          "name":"Y1S1.1_0006",
+          "parent":"Y1S1.1_0003",
+          "branchLevel":1
+        },
+        {
+          "id":"Y1S1.1_0009",
+          "name":"Y1S1.1_0009",
+          "parent":"Y1S1.1_0006",
+          "branchLevel":1
+        }
+      ],
+      "transform": [
+        {
+          "type": "stratify",
+          "key": "id",
+          "parentKey": "parent"
+        },
+        {
+          "type": "tree",
+          "method": "tidy",
+          "size": [{"signal": "height"}, {"signal": "width - 100"}],
+          "as": ["y", "x", "depth", "children"]
+        },
+        {
+          "type": "formula",
+          "expr": "datum.depth * 100",
+          "as":   "x"
+        },
+        {
+          "type": "formula",
+          "expr": "height- datum.branchLevel * 100",
+          "as":   "y"
+        }
+      ]
+    },
+    {
+      "name": "links",
+      "source": "tree",
+      "transform": [
+        { "type": "treelinks", "key": "id" },
+        {
+          "type": "linkpath",
+          "orient": "horizontal",
+          "shape": "line"
+        }
+      ]
+    }
+  ],
+
+  "scales": [
+    {
+      "name": "color",
+      "type": "sequential",
+      "range": {"scheme": "magma"},
+      "domain": {"data": "tree", "field": "depth"},
+      "zero": true
+    }
+  ],
+
+  "marks": [
+    {
+      "type": "path",
+      "from": {"data": "links"},
+      "encode": {
+        "update": {
+          "path": {"field": "path"},
+          "stroke": {"value": "#acc"}
+        }
+      }
+    },
+    {
+      "type": "symbol",
+      "from": {"data": "tree"},
+      "encode": {
+        "enter": {
+          "size": {"value": 90},
+          "stroke": {"value": "#fff"}
+        },
+        "update": {
+          "x": {"field": "x"},
+          "y": {"field": "y"},
+          "fill": {"scale": "color", "field": "depth"}
+        }
+      }
+    },
+    {
+      "type": "text",
+      "from": {"data": "tree"},
+      "encode": {
+        "enter": {
+          "text": {"field": "name"},
+          "fontSize": {"value": 9},
+          "baseline": {"value": "middle"}
+        },
+        "update": {
+          "x": {"field": "x"},
+          "y": {"field": "y"},
+          "angle":{"value":40},
+          "dx": {"value": 8},
+          "dy": {"value":2}
+        }
+      }
+    }
+  ]
+}
