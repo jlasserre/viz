@@ -1,5 +1,5 @@
 {
-  "$schema": "https://vega.github.io/schema/vega/v3.0.json",
+  "$schema": "https://vega.github.io/schema/vega/v3.json",
   "height": 2000,
   "padding": 5,
   "signals": [
@@ -123,88 +123,11 @@
       ]
     },
     {
-      "name": "test", 
-      "values": [
-        {
-          "country": "Norway",
-          "branch": "MAIN",
-          "totalPlaytime": 14
-        },
-        {
-          "country": "Norway",
-          "branch": "MAIN",
-          "totalPlaytime": 14
-        },
-        {
-          "country": "Norway",
-          "branch": "TU",
-          "totalPlaytime": 14
-        },
-        {
-          "country": "Norway",
-          "branch": "TU",
-          "totalPlaytime": 11
-        },
-        {
-          "country": "Germany",
-          "branch": "MAIN",
-          "totalPlaytime": 14
-        },
-        {
-          "country": "Germany",
-          "branch": "TU",
-          "totalPlaytime": 10
-        },
-        {
-          "country": "Germany",
-          "branch": "TU",
-          "totalPlaytime": 7
-        },
-        {
-          "country": "Canada",
-          "branch": "MAIN",
-          "totalPlaytime": 11
-        },
-        {
-          "country": "Canada",
-          "branch": "TU",
-          "totalPlaytime": 8
-        },
-        {
-          "country": "Canada",
-          "branch": "TU",
-          "totalPlaytime": 10
-        }
-      ],
-      "transform": [
-        {
-          "type": "pivot",
-          "groupby": [
-            "country"
-          ],
-          "field": "branch",
-          "value": "totalPlaytime",
-          "op": "sum"
-        }
-      ]
-    },
-    {
       "name": "reports_combined",
       "source": [
         "reports_TU",
         "reports_MAIN"
-      ],
-      "transform": [
-        {
-          "type": "pivot",
-          "field": "branch",
-          "value": "totalHoursPlayed",
-          "groupby": [
-            "shortDate"
-          ],
-          "op": "sum"
-        }
-      ]
+      ] 
     },
     {
       "name": "dates",
@@ -296,6 +219,7 @@
   ],
   "marks": [
     {
+      "name": "date text",
       "type": "text",
       "interactive": false,
       "from": {
@@ -368,8 +292,7 @@
               },
               "height": {
                 "scale": "yDates",
-                "band": 1,
-                "offset": -1
+                "band": 0.5
               },
               "fillOpacity": {
                 "value": 0.6
@@ -401,8 +324,7 @@
               },
               "height": {
                 "scale": "yDates",
-                "band": 1,
-                "offset": -1
+                "band": 0.5
               },
               "opacity": {
                 "value": 1.0
@@ -424,24 +346,24 @@
               "x": {
                 "scale": "x_TU",
                 "field": "totalHoursPlayed",
-                "offset": 2
+                "offset": -2
               },
               "y": {
                 "scale": "yDates",
                 "field": "shortDate",
-                "band": 0.5
+                "band": 0.55
               },
               "text": {
                 "field": "totalHoursPlayed"
               },
               "baseline": {
-                "value": "middle"
+                "value": "bottom"
               },
               "align": {
-                "value": "left"
+                "value": "right"
               },
               "fill": {
-                "value": "white"
+                "value": "black"
               }
             }
           }
@@ -490,8 +412,7 @@
               },
               "height": {
                 "scale": "yDates",
-                "band": 1,
-                "offset": -1
+                "band":0.5
               },
               "fillOpacity": {
                 "value": 0.6
@@ -523,8 +444,7 @@
               },
               "height": {
                 "scale": "yDates",
-                "band": 1,
-                "offset": -1
+                "band": 0.5
               },
               "opacity": {
                 "value": 1.0
@@ -546,91 +466,24 @@
               "x": {
                 "scale": "x_MAIN",
                 "field": "totalHoursPlayed",
-                "offset": -1
+                "offset": 2
               },
               "y": {
                 "scale": "yDates",
                 "field": "shortDate",
-                "band": 0.5
+                "band": 0.55
               },
               "text": {
                 "field": "totalHoursPlayed"
               },
               "baseline": {
-                "value": "middle"
-              },
-              "align": {
-                "value": "right"
-              },
-              "fill": {
-                "value": "white"
-              }
-            }
-          }
-        },
-        {
-          "type": "path",
-          "from": {
-            "data": "reports_combined"
-          },
-          "encode": {
-            "enter": {
-              "fillOpacity": {
-                "value": 0
-              },
-              "stroke": {
-                "value": "black"
-              },
-              "strokeWidth": {
-                "value": 1
-              }
-            },
-            "update": {
-              "x": {
-                "scale": "x_MAIN",
-                "value": 0,
-                "offset": 1
-              },
-              "y": {
-                "scale": "yDates",
-                "field": "shortDate",
-                "band": 0
-              },
-              "path": {
-                "value": "M-2,-5 L5,5 V-5 L-5,5 Z"
-              }
-            }
-          }
-        },
-        {
-          "type": "text",
-          "interactive": false,
-          "from": {
-            "data": "reports_combined"
-          },
-          "encode": {
-            "update": {
-              "x": {
-                "scale": "x_MAIN",
-                "field": "MAIN",
-                "offset": 6
-              },
-              "y": {
-                "scale": "yDates",
-                "field": "shortDate",
-                "band": 0.5
-              },
-              "text": {
-                "signal": "(datum.MAIN > 0)?datum.MAIN + datum.TU:''"
-              },
-              "baseline": {
-                "value": "middle"
+                "value": "bottom"
               },
               "align": {
                 "value": "left"
               },
               "fill": {
-                "value": "darkgrey"
+                "value": "black"
               }
             }
           }
