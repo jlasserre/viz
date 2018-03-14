@@ -1,9 +1,9 @@
 {
-  "$schema": "https://vega.github.io/schema/vega/v3.json",
+  "$schema": "https://vega.github.io/schema/vega/v3.0.json",
   "height": 2000,
   "padding": 5,
   "signals": [
-    {
+    { 
       "name": "chartWidth",
       "value": 300
     },
@@ -21,22 +21,22 @@
     },
     {
       "name": "includeFury",
-      "bind":{
-        "input":"checkbox"
+      "bind": {
+        "input": "checkbox"
       }
     }
   ],
   "data": [
     {
       "name": "reports",
-      "url":  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQDBEJKDMsKNq6hPDTRX6M4zGrAPCkBCuio7MCk3TInN5QYY1vYukxC6nVcgkoeXx542Khal32ZIIHF/pub?output=csv",
+      "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQDBEJKDMsKNq6hPDTRX6M4zGrAPCkBCuio7MCk3TInN5QYY1vYukxC6nVcgkoeXx542Khal32ZIIHF/pub?output=csv",
       "format": {
         "type": "csv",
-        "parse":{
-          "numDistinctCrashIssues":"number",
-          "numOccurrences":"number",
-          "targetMTBC":"number",
-          "totalPlaytime":"number"
+        "parse": {
+          "numDistinctCrashIssues": "number",
+          "numOccurrences": "number",
+          "targetMTBC": "number",
+          "totalPlaytime": "number"
         }
       },
       "transform": [
@@ -46,14 +46,14 @@
           "expr": "monthAbbrevFormat(utcmonth(datum.date)) + ' ' + utcdate(datum.date) + ' ' + utcyear(datum.date)"
         },
         {
-          "type":"formula",
+          "type": "formula",
           "as": "totalHoursPlayed",
-          "expr":"floor(datum.totalPlaytime / 60, 1)"
+          "expr": "floor(datum.totalPlaytime / 60, 1)"
         },
         {
-          "type":"formula",
+          "type": "formula",
           "as": "targetMTBC_hour",
-          "expr":"floor(datum.targetMTBC / 60, 1)"
+          "expr": "floor(datum.targetMTBC / 60, 1)"
         }
       ]
     },
@@ -62,15 +62,17 @@
       "source": "reports",
       "transform": [
         {
-          "type":"filter",
+          "type": "filter",
           "expr": "includeFury || datum.isFury == 'FALSE'"
         },
         {
           "type": "aggregate",
-          "groupby":[
-            "date", "branch", "shortDate"
+          "groupby": [
+            "date",
+            "branch",
+            "shortDate"
           ],
-          "fields":[
+          "fields": [
             "buildVersion",
             "numDistinctCrashIssues",
             "numOccurrences",
@@ -79,7 +81,7 @@
             "totalHoursPlayed",
             "totalPlaytime"
           ],
-          "ops":[
+          "ops": [
             "min",
             "sum",
             "sum",
@@ -88,7 +90,7 @@
             "sum",
             "sum"
           ],
-          "as":[
+          "as": [
             "buildVersion",
             "numDistinctCrashIssues",
             "numOccurrences",
@@ -121,27 +123,112 @@
       ]
     },
     {
+      "name": "test", 
+      "values": [
+        {
+          "country": "Norway",
+          "branch": "MAIN",
+          "totalPlaytime": 14
+        },
+        {
+          "country": "Norway",
+          "branch": "MAIN",
+          "totalPlaytime": 14
+        },
+        {
+          "country": "Norway",
+          "branch": "TU",
+          "totalPlaytime": 14
+        },
+        {
+          "country": "Norway",
+          "branch": "TU",
+          "totalPlaytime": 11
+        },
+        {
+          "country": "Germany",
+          "branch": "MAIN",
+          "totalPlaytime": 14
+        },
+        {
+          "country": "Germany",
+          "branch": "TU",
+          "totalPlaytime": 10
+        },
+        {
+          "country": "Germany",
+          "branch": "TU",
+          "totalPlaytime": 7
+        },
+        {
+          "country": "Canada",
+          "branch": "MAIN",
+          "totalPlaytime": 11
+        },
+        {
+          "country": "Canada",
+          "branch": "TU",
+          "totalPlaytime": 8
+        },
+        {
+          "country": "Canada",
+          "branch": "TU",
+          "totalPlaytime": 10
+        }
+      ],
+      "transform": [
+        {
+          "type": "pivot",
+          "groupby": [
+            "country"
+          ],
+          "field": "branch",
+          "value": "totalPlaytime",
+          "op": "sum"
+        }
+      ]
+    },
+    {
+      "name": "reports_combined",
+      "source": [
+        "reports_TU",
+        "reports_MAIN"
+      ],
+      "transform": [
+        {
+          "type": "pivot",
+          "field": "branch",
+          "value": "totalHoursPlayed",
+          "groupby": [
+            "shortDate"
+          ],
+          "op": "sum"
+        }
+      ]
+    },
+    {
       "name": "dates",
       "source": "reports",
       "transform": [
         {
           "type": "aggregate",
-          "groupby":[
-            "date", "shortDate"
+          "groupby": [
+            "date",
+            "shortDate"
           ],
-          "fields":[
+          "fields": [
             "numDistinctCrashIssues",
             "numOccurrences",
             "totalHoursPlayed",
             "totalPlaytime"
           ],
-          "ops":[
+          "ops": [
             "sum",
             "sum",
             "sum",
             "sum"
           ],
-          "as":[
+          "as": [
             "totalDistinctCrashIssues",
             "totalOccurrences",
             "totalHoursPlayed",
@@ -179,8 +266,11 @@
       ],
       "nice": true,
       "zero": true,
-      "domain":[
-        0,{"signal":"dailyTimeRange"}
+      "domain": [
+        0,
+        {
+          "signal": "dailyTimeRange"
+        }
       ]
     },
     {
@@ -196,12 +286,13 @@
       ],
       "nice": true,
       "zero": true,
-      "domain":[
-        0,{"signal":"dailyTimeRange"}
+      "domain": [
+        0,
+        {
+          "signal": "dailyTimeRange"
+        }
       ]
-
     }
-
   ],
   "marks": [
     {
@@ -290,7 +381,7 @@
           }
         },
         {
-          "name":"targetMTBC TU",
+          "name": "targetMTBC TU",
           "type": "rect",
           "from": {
             "data": "reports_TU"
@@ -355,7 +446,6 @@
             }
           }
         }
-
       ]
     },
     {
@@ -413,7 +503,7 @@
           }
         },
         {
-          "name":"targetMTBC MAIN",
+          "name": "targetMTBC MAIN",
           "type": "rect",
           "from": {
             "data": "reports_MAIN"
@@ -474,6 +564,73 @@
               },
               "fill": {
                 "value": "white"
+              }
+            }
+          }
+        },
+        {
+          "type": "path",
+          "from": {
+            "data": "reports_combined"
+          },
+          "encode": {
+            "enter": {
+              "fillOpacity": {
+                "value": 0
+              },
+              "stroke": {
+                "value": "black"
+              },
+              "strokeWidth": {
+                "value": 1
+              }
+            },
+            "update": {
+              "x": {
+                "scale": "x_MAIN",
+                "value": 0,
+                "offset": 1
+              },
+              "y": {
+                "scale": "yDates",
+                "field": "shortDate",
+                "band": 0
+              },
+              "path": {
+                "value": "M-2,-5 L5,5 V-5 L-5,5 Z"
+              }
+            }
+          }
+        },
+        {
+          "type": "text",
+          "interactive": false,
+          "from": {
+            "data": "reports_combined"
+          },
+          "encode": {
+            "update": {
+              "x": {
+                "scale": "x_MAIN",
+                "field": "MAIN",
+                "offset": 6
+              },
+              "y": {
+                "scale": "yDates",
+                "field": "shortDate",
+                "band": 0.5
+              },
+              "text": {
+                "signal": "(datum.MAIN > 0)?datum.MAIN + datum.TU:''"
+              },
+              "baseline": {
+                "value": "middle"
+              },
+              "align": {
+                "value": "left"
+              },
+              "fill": {
+                "value": "darkgrey"
               }
             }
           }
