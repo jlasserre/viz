@@ -1,0 +1,70 @@
+Questions
+
+1- à quelle fréquence est-ce qu'on a un Playtime inférieur au Target MTBC ?
+    Parce que dans ce cas, même une seule occurrence fait descendre le MTBC sous le seuil du Target MTBC.
+
+2a- Quelle est la correlation entre le temps joué et le nombre d'occurrences ?
+2b- Quelle est la correlation entre le nombre de joueurs et le nombre d'occurrences ?
+    Parce que le MTBC ne tient pas compte du nombre de joueurs mais peut-être que ça peut être un indicateur important...
+    Peut-être que le Target MTBC peut être une fonction de l'un ou l'autre de ces critères ?
+    Est-ce que peu de joueurs pendant longtemps c'est mieux que beaucoup de joeurs pendant peu longtemps ?
+
+3- Est-ce que le uptime avant le crash est une variable pertinente ?
+    ça permet peut-être différencier les crash-on-boot (ou on start) des crashes qui arrivent pendant le gameplay... Est-ce même pertinent?
+
+4- Est-ce qu'il est pertinent de compter chaque occurrence d'un même crash ou pas ?
+    Si on joue plus longtemps (ou avec plus de joueurs) est-ce qu'on obtient plus d'occurrences du même problème ? Si oui est-ce que c'est pertinent de le compter dans le MTBC ou pas ?
+    10 crash on boot c'est peut-être pas si important.
+4b- Quand on a un LOW MTBC, est-ce que c'est souvent à cause d'un même crash avec beaucoup d'occurrences ou est-ce à cause d'un grand nombre de crashes différents
+
+
+Graphiques à faire
+A- dot matrix de temps de jeu vs numOccurrences (couleur du point: mtbc fail ou pass)
+B- Graph de numPlayers vs numOccurrences ()
+C- Calendrier de MTBC vs num distinct crashes (jira id)
+
+
+
+Pour Chaque jour:
+    si 1 * targetMTBC < playtime, mettre carré rouge autour des résultats du jour.
+    si 2 * targetMTBC < playtime, mettre carré orange autour des résultats du jour.
+    si reportedMTBC < TargetMTBC, FILL avec rouge.
+
+
++++++++++++++++++++++++++
+graphe 1 ligne par jour
+sur chaque ligne, barre représente la durée de jeu
+    vers la gauche: TU
+    vers la droite: Main
+la barre est verte si MTBC acceptable, rouge autrement
+la barre est plus saturée entre le centre et la durée du MTBC. La barre est ensuite plus pale pour le reste de la longueur.
+un trait vertical par dessus la barre représente le targetMTBC
++++++++++++++++++++++++++
+
+
+
+                  ------| <date> |-----------------
+                  ------| <date> |-------
+              ----------| <date> |----
+              ----------| <date> |-------
+                    ----| <date> |--------------------
+                  ------| <date> |-------------------
+                --------| <date> |------------------
+            ------------| <date> |---------
+                  ------| <date> |-----------------
+            ------------| <date> |-------
+            ------------| <date> |-----
+          --------------| <date> |------
+
+
+Needed Data:
+{
+    date,
+    buildVersion,
+    branch (tu vs main),
+    totalPlayTime,
+    numOccurrences,
+    numDistinctIssues,
+    numPlayersPVP,
+    targetMTBC
+}

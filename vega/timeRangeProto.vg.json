@@ -1,0 +1,256 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v3.json",
+  "width": 700,
+  "height": 650,
+  "padding": 5,
+  "autosize": {"type": "fit", "resize": true},
+  "signals": [
+    {
+      "name": "epochDay_ms",
+      "value": 86400000
+    },
+    {
+      "name": "chartHeight",
+      "value": 280
+    },
+    {
+      "name": "backgroundOpacity",
+      "value": 0.6
+    }
+  ],
+  "data": [
+    {
+      "name": "issues",
+      "values":[
+        {
+          "issueKey":"RS-0001",
+          "dateStart":"03/10/2018",
+          "dateEnd":"03/17/2018"
+        },
+        {
+          "issueKey":"RS-0002",
+          "dateStart":"03/20/2018",
+          "dateEnd":"04/10/2018"
+        },
+        {
+          "issueKey":"RS-0003",
+          "dateStart":"04/13/2018",
+          "dateEnd":"04/30/2018"
+        },
+        {
+          "issueKey":"RS-0004",
+          "dateStart":"04/13/2018",
+          "dateEnd":"04/30/2018"
+        },
+        {
+          "issueKey":"RS-0005",
+          "dateStart":"04/13/2018",
+          "dateEnd":"04/30/2018"
+        },
+        {
+          "issueKey":"RS-0006",
+          "dateStart":"05/10/2018",
+          "dateEnd":"06/14/2018"
+        },
+        {
+          "issueKey":"RS-0007",
+          "dateStart":"04/26/2018",
+          "dateEnd":"06/08/2018"
+        }
+      ],
+      "transform": [
+        {
+          "type": "formula",
+          "as": "dateStart_ms",
+          "expr": "time(datum.dateStart)"
+        },
+        {
+          "type": "formula",
+          "as": "dateEnd_ms",
+          "expr": "time(datum.dateEnd)"
+        }
+      ]
+    },
+    {
+      "name": "dailyIssueCount",
+      "source":"issues",
+      "transform": [
+        {
+          "type": "formula", 
+          "as": "date_ms",
+          "expr": "sequence(datum.dateStart_ms, datum.dateEnd_ms + epochDay_ms, epochDay_ms)"
+        },
+        {
+          "type": "flatten",
+          "fields":["date_ms"]
+        },
+        {
+          "type": "aggregate",
+          "groupby": ["date_ms"],
+          "fields": ["date_ms"],
+          "ops": ["count"],
+          "as": ["issueCount"]
+        },
+        {
+          "type": "formula",
+          "expr": "timeFormat(datum.date_ms, '%Y-%m-%dT%H:%M:%S.%LZ')",
+          "as":"dateTxt"
+        }
+      ]
+    }
+
+  ],
+  "scales": [
+    {
+      "name": "layout",
+      "type": "band",
+      "domain": ["range", "count"],
+      "range": "height"
+    },
+    {
+      "name": "dateScale",
+      "type": "time",
+      "domain": {
+        "data": "dailyIssueCount",
+        "field": "date_ms"
+      },
+      "range": "width"
+    }
+  ],
+  "axes": [
+    {
+      "orient":"top",
+      "scale": "dateScale",
+      "labels": true,
+      "grid": true,
+      "offset": 10
+    },
+    {
+      "orient":"bottom",
+      "scale": "dateScale",
+      "labels": true,
+      "grid": true,
+      "offset": 10
+    }
+  ],
+  "marks": [
+    {
+      "name": "rangeView",
+      "type": "group",
+      "encode": { 
+        "enter":{
+          "y":{
+            "scale":"layout",
+            "value": "range"
+          },
+          "width": {"signal": "width"},
+          "height":{"signal": "chartHeight"},
+          "fill":{"value":"yellow"},
+          "fillOpacity":{ "signal":"backgroundOpacity"}
+        }
+      },
+      "scales": [
+        {
+          "name": "yscale",
+          "type": "band",
+          "domain": {
+            "data": "issues",
+            "field": "issueKey",
+            "sort": true
+          },
+          "range":[0, {"signal":"chartHeight"}],
+          "paddingOuter": 0.2,
+          "paddingInner": 0.4
+        }
+      ],
+      "axes":[
+        {
+          "scale": "yscale",
+          "orient": "left",
+          "grid": true
+        }
+      ],
+      "marks": [
+        {
+          "type": "rect",
+          "from": {
+            "data": "issues"
+          },
+          "encode": {
+            "update":{
+              "x": { "scale": "dateScale", "field": "dateStart_ms"},
+              "x2":{ "scale": "dateScale", "field": "dateEnd_ms"},
+              "y":{ "scale": "yscale", "field": "issueKey"},
+              "height":{"scale": "yscale", "band": 1},
+              "cornerRadius": {"value":5}
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "countView",
+      "type": "group",
+      "encode": {
+        "enter":{
+          "y":{
+            "scale":"layout",
+            "value": "count"
+          },
+          "width": {"signal": "width"},
+          "height":{"signal": "chartHeight"},
+          "fill":{"value":"pink"},
+          "fillOpacity":{ "signal":"backgroundOpacity"}
+        }
+      },
+      "scales": [
+        {
+          "name": "yscale",
+          "type": "linear",
+          "domain": {
+            "data": "dailyIssueCount",
+            "field": "issueCount"
+          },
+          "range":[{"signal":"chartHeight"}, 40]
+        },
+        {
+          "name": "xwidthscale",
+          "type": "linear",
+          "domain": {
+            "data":"dailyIssueCount",
+            "field":"date_ms"
+          },
+          "range" : "width"
+        }
+      ],
+      "axes": [
+        {
+          "scale": "yscale",
+          "orient": "left",
+          "grid": true
+        }
+      ],
+      "marks": [
+        {
+          "type":"rect",
+          "from": {
+            "data": "dailyIssueCount"
+          },
+          "encode": {
+            "enter":
+            {
+              "x":{
+                "scale":"dateScale",
+                "field":"date_ms"
+              },
+              "width": {"value": 5},
+              "y": {"scale": "yscale", "value": 0},
+              "y2":{"scale": "yscale", "field": "issueCount"},
+              "opacity":{"value": 1}
+            }
+          }
+        }
+      ]
+    }   
+  ]
+}

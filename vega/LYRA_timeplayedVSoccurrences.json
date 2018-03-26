@@ -1,0 +1,314 @@
+{
+  "width": 800,
+  "height": 700,
+  "padding": "auto",
+  "data": [
+    {
+      "name": "coverage",
+      "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vS-DVWYt4dVc5cMVuPs-Kb3a2jT9Yjfu1Ri_pRNwRqmRMF2V2OI7oUZwDra9TauQ8QykFsWLRaxcoQv/pub?output=csv",
+      "format": {
+        "type": "csv",
+        "parse": {
+          "yearNum": "number",
+          "weekFromToday": "number",
+          "weekNum": "number",
+          "dayOfWeek": "number",
+          "timePlayed": "number",
+          "numPlayers": "number",
+          "occurrences": "number",
+          "": "date"
+        }
+      },
+      "lyra.role": "data_source"
+    },
+    {
+      "name": "pipeline_0",
+      "lyra.displayName": "Pipeline 1",
+      "source": "coverage",
+      "transform": [
+        {
+          "type": "formula",
+          "field": "failedMTBC",
+          "expr": "d.data.timePlayed/d.data.occurrences<4000"
+        }
+      ]
+    },
+    {
+      "name": "pipeline_1",
+      "lyra.displayName": "Pipeline 2",
+      "transform": []
+    }
+  ],
+  "scales": [],
+  "marks": [
+    {
+      "properties": {
+        "enter": {
+          "x": {
+            "value": 65
+          },
+          "width": {
+            "value": 576
+          },
+          "y": {
+            "value": 10
+          },
+          "height": {
+            "value": 456
+          },
+          "clip": {
+            "value": 0
+          },
+          "fill": {
+            "value": "#ffffff"
+          },
+          "fillOpacity": {
+            "value": 0
+          },
+          "stroke": {
+            "value": "#000000"
+          },
+          "strokeWidth": {
+            "value": 0
+          }
+        }
+      },
+      "scales": [
+        {
+          "type": "linear",
+          "points": true,
+          "nice": true,
+          "padding": 0,
+          "zero": true,
+          "name": "pipeline_0_scale_6",
+          "domain": {
+            "data": "pipeline_0",
+            "field": "data.timePlayed"
+          },
+          "inheritFromGroup": false,
+          "range": "width",
+          "lyra.displayName": "X"
+        },
+        {
+          "type": "linear",
+          "points": true,
+          "nice": true,
+          "padding": 0,
+          "zero": true,
+          "name": "pipeline_0_scale_7",
+          "domain": {
+            "data": "pipeline_0",
+            "field": "data.occurrences"
+          },
+          "inheritFromGroup": false,
+          "range": "height",
+          "lyra.displayName": "Y"
+        },
+        {
+          "type": "ordinal",
+          "points": true,
+          "nice": true,
+          "padding": "0",
+          "zero": true,
+          "reverse": false,
+          "name": "pipeline_0_scale_2",
+          "domain": {
+            "data": "pipeline_0",
+            "field": "failedMTBC"
+          },
+          "inheritFromGroup": false,
+          "range": [
+            "#f04a4a",
+            "#a3ffa1"
+          ],
+          "lyra.displayName": "Fill Color"
+        }
+      ],
+      "axes": [
+        {
+          "type": "x",
+          "orient": "bottom",
+          "scale": "pipeline_0_scale_6",
+          "title": "Time Played",
+          "layer": "back",
+          "ticks": 10,
+          "tickSize": 6,
+          "titleOffset": 35,
+          "tickValues": false,
+          "grid": true,
+          "properties": {
+            "ticks": {
+              "stroke": {
+                "value": "#000"
+              },
+              "strokeWidth": {
+                "value": 1
+              }
+            },
+            "labels": {
+              "fontSize": {
+                "value": 11
+              },
+              "font": {
+                "value": "Helvetica"
+              },
+              "angle": {
+                "value": 0
+              },
+              "fill": {
+                "value": "#000"
+              }
+            },
+            "title": {
+              "font": {
+                "value": "Helvetica"
+              },
+              "fontSize": {
+                "value": 11
+              },
+              "fontWeight": {
+                "value": "bold"
+              },
+              "fill": {
+                "value": "#000"
+              }
+            },
+            "axis": {
+              "stroke": {
+                "value": "#000"
+              },
+              "strokeWidth": {
+                "value": "0.75"
+              }
+            },
+            "grid": {
+              "stroke": {
+                "value": "#d8d8d8"
+              },
+              "strokeWidth": {
+                "value": 1
+              }
+            }
+          }
+        },
+        {
+          "type": "y",
+          "orient": "left",
+          "scale": "pipeline_0_scale_7",
+          "title": "Occurrences",
+          "layer": "back",
+          "ticks": 10,
+          "tickSize": 6,
+          "titleOffset": 30,
+          "grid": true,
+          "properties": {
+            "ticks": {
+              "stroke": {
+                "value": "#000"
+              },
+              "strokeWidth": {
+                "value": 1
+              }
+            },
+            "labels": {
+              "fontSize": {
+                "value": 11
+              },
+              "font": {
+                "value": "Helvetica"
+              },
+              "angle": {
+                "value": 0
+              },
+              "fill": {
+                "value": "#000"
+              }
+            },
+            "title": {
+              "font": {
+                "value": "Helvetica"
+              },
+              "fontSize": {
+                "value": 11
+              },
+              "fontWeight": {
+                "value": "bold"
+              },
+              "fill": {
+                "value": "#000"
+              }
+            },
+            "axis": {
+              "stroke": {
+                "value": "#000"
+              },
+              "strokeWidth": {
+                "value": 1
+              }
+            },
+            "grid": {
+              "stroke": {
+                "value": "#d8d8d8"
+              },
+              "strokeWidth": {
+                "value": 1
+              }
+            }
+          }
+        }
+      ],
+      "marks": [
+        {
+          "properties": {
+            "enter": {
+              "x": {
+                "scale": "pipeline_0_scale_6",
+                "field": "data.timePlayed"
+              },
+              "y": {
+                "scale": "pipeline_0_scale_7",
+                "field": "data.occurrences"
+              },
+              "size": {
+                "value": 40
+              },
+              "shape": {
+                "value": "circle"
+              },
+              "fill": {
+                "scale": "pipeline_0_scale_2",
+                "field": "failedMTBC"
+              },
+              "fillOpacity": {
+                "value": 1
+              },
+              "stroke": {
+                "value": "#000000"
+              },
+              "strokeWidth": {
+                "value": 0.25
+              },
+              "width": {
+                "value": 12
+              },
+              "height": {
+                "value": 12
+              }
+            }
+          },
+          "name": "symbol_4",
+          "type": "symbol",
+          "from": {
+            "data": "pipeline_0"
+          },
+          "lyra.displayName": "Symbol 1"
+        }
+      ],
+      "name": "layer_1",
+      "type": "group",
+      "from": {},
+      "lyra.displayName": "Layer 2",
+      "lyra.groupType": "layer"
+    }
+  ]
+}
