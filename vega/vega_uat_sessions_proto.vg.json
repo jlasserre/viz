@@ -99,7 +99,7 @@
       "orient": "left",
       "scale": "yDateScale",
       "labels": true,
-      "grid": true
+      "grid": false
     }
   ],
   "marks": [
@@ -167,12 +167,6 @@
 
           }
         ]
-    },
-    {
-      "type": "rect",
-      "from": {
-        "data": "sessions"
-      }
     }
   ]
 }
