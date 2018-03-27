@@ -1,0 +1,110 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v3.json",
+  "width": 1300,
+  "height": 940,
+  "padding": 5,
+  "autosize": {"type": "fit", "resize": true},
+  "signals": [
+    {
+      "name": "epochDay_ms",
+      "value": 86400000
+    },
+    {
+      "name": "chartHeight",
+      "value": 280
+    },
+    {
+      "name": "backgroundOpacity",
+      "value": 0.6
+    }
+  ],
+  "data": [
+    {
+      "name": "sessions",
+      "url":"http://localhost:3009/api/buildReports/getRawSessions?maxCount=170",
+      "transform": [
+        {
+          "type": "formula",
+          "as": "begindate_ms",
+          "expr": "time(datum.begindate)"
+        },
+        {
+          "type": "formula",
+          "as": "enddate_ms",
+          "expr": "time(datum.enddate)"
+        }
+      ]
+    }
+  ],
+  "scales": [
+    {
+      "name": "fullDayScale",
+      "type": "time",
+      "domain": [0,24],
+      "range": "width",
+      "padding": 0.1
+    },
+    {
+      "name": "timeScale",
+      "type": "time",
+      "domain": {
+        "data": "sessions",
+        "fields": ["begindate_ms","enddate_ms"],
+        "sort": true
+      },
+      "range": "width",
+      "padding": 0.1
+    },
+    {
+      "name": "yscale",
+      "type": "band",
+      "domain": {
+        "data": "sessions",
+        "field": "nameonplatform",
+        "sort": true
+      },
+      "range":[0, {"signal":"height"}],
+      "paddingOuter": 0.2,
+      "paddingInner": 0.4
+    }
+
+  ],
+  "axes": [
+    {
+      "orient":"top",
+      "scale": "fullDayScale",
+      "labels": true,
+      "grid": true,
+      "offset": 10
+    },
+    {
+      "orient":"bottom",
+      "scale": "fullDayScale",
+      "labels": true,
+      "grid": true,
+      "offset": 10
+    },
+    {
+      "scale": "yscale",
+      "orient": "left",
+      "grid": true
+    }
+  ],
+  "marks": [
+    {
+      "type": "rect",
+      "from": {
+        "data": "sessions"
+      },
+      "encode": {
+        "update":{
+          "x": { "scale": "timeScale", "field": "begindate_ms"},
+          "x2":{ "scale": "timeScale", "field": "enddate_ms"},
+          "y":{ "scale": "yscale", "field": "nameonplatform"},
+          "height":{"scale": "yscale", "band": 1},
+          "cornerRadius": {"value":1}
+        }
+      }
+    }
+  ]
+}
