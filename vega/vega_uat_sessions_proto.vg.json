@@ -1,27 +1,23 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v3.json",
-  "width": 1300,
-  "height": 940,
+  "width": 1400,
+  "height": 1200,
   "padding": 5,
   "autosize": {"type": "fit", "resize": true},
   "signals": [
     {
-      "name": "epochDay_ms",
-      "value": 86400000
-    },
-    {
-      "name": "chartHeight",
-      "value": 280
-    },
-    {
-      "name": "backgroundOpacity",
-      "value": 0.6
+      "name": "currentUserId",
+      "description": "the userid of the item under the mouse",
+      "value": "",
+      "on": [
+        {"events": "rect:mouseover", "update": "datum.userid"}
+      ]
     }
   ],
   "data": [
     {
       "name": "sessions",
-      "url":"http://localhost:3009/api/buildReports/getRawSessions?maxCount=170",
+      "url":"http://localhost:3009/api/buildReports/getRawSessions?maxCount=2000&startDate=20180325&endDate=20180327",
       "transform": [
         {
           "type": "formula",
@@ -32,7 +28,18 @@
           "type": "formula",
           "as": "enddate_ms",
           "expr": "time(datum.enddate)"
+        },
+        {
+          "type": "formula",
+          "as": "starttimeinday_ms",
+          "expr": "1000*(utchours(datum.begindate)*3600 + utcminutes(datum.begindate)*60 + utcseconds(datum.begindate))"
+        },
+        {
+          "type": "formula",
+          "as": "endtimeinday_ms",
+          "expr": "1000*(utchours(datum.enddate)*3600 + utcminutes(datum.enddate)*60 + utcseconds(datum.enddate))"
         }
+
       ]
     }
   ],
@@ -40,7 +47,12 @@
     {
       "name": "fullDayScale",
       "type": "time",
-      "domain": [0,24],
+      "domain": {
+        "data": "sessions",
+        "fields": [
+          "starttimeinday_ms", "endtimeinday_ms"
+        ]
+      },
       "range": "width",
       "padding": 0.1
     },
@@ -56,16 +68,13 @@
       "padding": 0.1
     },
     {
-      "name": "yscale",
+      "name": "yDateScale",
       "type": "band",
-      "domain": {
+      "domain":{
         "data": "sessions",
-        "field": "nameonplatform",
-        "sort": true
+        "field": "serverdateid"
       },
-      "range":[0, {"signal":"height"}],
-      "paddingOuter": 0.2,
-      "paddingInner": 0.4
+      "range":"height"
     }
 
   ],
@@ -75,35 +84,94 @@
       "scale": "fullDayScale",
       "labels": true,
       "grid": true,
-      "offset": 10
+      "offset": 10,
+      "title": "UTC Time of Day"
     },
     {
       "orient":"bottom",
       "scale": "fullDayScale",
       "labels": true,
       "grid": true,
-      "offset": 10
+      "offset": 10,
+      "title": "UTC Time of Day"
     },
     {
-      "scale": "yscale",
       "orient": "left",
+      "scale": "yDateScale",
+      "labels": true,
       "grid": true
     }
   ],
   "marks": [
     {
+      "type":"group",
+      "from":{
+        "facet":{
+          "data": "sessions",
+          "name": "facet",
+          "groupby":"serverdateid"
+        }
+      },
+      "encode": {
+        "enter":{
+          "y": {
+            "scale":"yDateScale",
+            "field":"serverdateid"
+            }
+          }
+        },
+        "signals": [
+          {
+            "name": "height", "update": "bandwidth('yDateScale')"
+          }
+        ],
+        "scales": [
+          {
+            "name": "yscale",
+            "type": "band",
+            "domain": {
+              "data": "sessions",
+              "field": "nameonplatform",
+              "sort": true
+            },
+            "range":"height"
+          }
+        ],
+        "marks": [
+          {
+            "type": "rect",
+            "from": {
+              "data": "facet"
+            },
+            "encode": {
+              "enter":{
+                "x": { "scale": "fullDayScale", "field": "starttimeinday_ms"},
+                "x2":{ "scale": "fullDayScale", "field": "endtimeinday_ms"},
+                "y":{ "scale": "yscale", "field": "nameonplatform"},
+                "height":{"scale": "yscale", "band": 1},
+                "cornerRadius": {"value":1}
+              },
+              "update":{
+                "fill": [
+                  {
+                    "test": "datum.userid == currentUserId",
+                    "value":"red"
+                  },
+                  {
+                    "value":"blue"
+                  }
+                ]
+              }
+            }
+
+
+          }
+        ]
+    },
+    {
       "type": "rect",
       "from": {
         "data": "sessions"
-      },
-      "encode": {
-        "update":{
-          "x": { "scale": "timeScale", "field": "begindate_ms"},
-          "x2":{ "scale": "timeScale", "field": "enddate_ms"},
-          "y":{ "scale": "yscale", "field": "nameonplatform"},
-          "height":{"scale": "yscale", "band": 1},
-          "cornerRadius": {"value":1}
-        }
       }
     }
   ]
